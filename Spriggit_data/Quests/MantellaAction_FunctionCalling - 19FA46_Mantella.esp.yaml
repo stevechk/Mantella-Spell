@@ -1,0 +1,60 @@
+FormKey: 19FA46:Mantella.esp
+EditorID: MantellaAction_FunctionCalling
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAction_FunctionCallingScript
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionDummySpell
+      Object: 1F5B58:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionWhoIsSourceTargeting
+      Object: 1A4B4A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionModeFaction
+      Object: 1A4B48:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLootQuest
+      Object: 1C314C:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLootConsumablesQuest
+      Object: 1D754F:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLootArmorQuest
+      Object: 1F0A54:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 1A4B47:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLootWeaponsQuest
+      Object: 1EB951:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionTargetFaction
+      Object: 1A4B49:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLootJunkQuest
+      Object: 1F0A56:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: repository
+      Object: 000D62:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+NextAliasID: 0

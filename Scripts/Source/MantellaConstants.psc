@@ -80,6 +80,9 @@ string property KEY_CONTEXT_WEATHER_ID = "mantella_weather_id" auto
 string property KEY_CONTEXT_WEATHER_CLASSIFICATION = "mantella_weather_classification" auto
 string property KEY_CONTEXT_TIME = "mantella_time" auto
 string property KEY_CONTEXT_INGAMEEVENTS = "mantella_ingame_events" auto
+string property KEY_CONTEXT_CUSTOMVALUES = "mantella_custom_context_values" auto
+string property KEY_SIGNAL_EXTERNAL_CUSTOM_CONTEXT_EVENT = "mantella_signal_external_custom_context_event" auto
+string property KEY_CONTEXT_NPC_SPELL_LIST = "mantella_npc_spell_list" auto
 
 ;player input
 string property KEY_REQUESTTYPE_TTS = "mantella_tts" auto
@@ -101,3 +104,32 @@ string property ACTION_NPC_OFFENDED = "mantella_npc_offended" auto
 string property ACTION_NPC_FORGIVEN = "mantella_npc_forgiven" auto
 string property ACTION_NPC_FOLLOW = "mantella_npc_follow" auto
 string property ACTION_NPC_INVENTORY = "mantella_npc_inventory" auto
+string property ACTION_NPC_MOVETO_NPC = "mantella_move_character_near_npc" auto
+string property ACTION_MULTI_MOVETO_NPC = "mantella_move_characters_near_npc" auto
+string property ACTION_MAKE_NPC_WAIT = "mantella_make_npc_wait" auto
+string property ACTION_MULTI_MAKE_NPC_WAIT = "mantella_multi_make_npc_wait" auto
+string property ACTION_NPC_ATTACK_OTHER_NPC = "mantella_npc_attack_other_npc" auto
+string property ACTION_MULTI_NPC_ATTACK_OTHER_NPC = "mantella_multi_npc_attack_other_npc" auto
+string property ACTION_NPC_LOOT_ITEMS = "mantella_npc_loot_items" auto
+string property ACTION_MULTI_NPC_LOOT_ITEMS ="mantella_multi_npc_loot_items" auto
+string property ACTION_NPC_USE_SPELL ="mantella_npc_use_spell_on_target" auto
+string property ACTION_MULTI_TELEPORT_NPC ="mantella_multi_teleport_npc" auto
+string property ACTION_TELEPORT_NPC ="mantella_teleport_npc" auto
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;       Functions Inference Value (MantellaMod -> Mantella Software)      ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;; OUPUT ('Mantella Mod -> Mantella Software') ;;;;;;;;;;;;;
+string property KEY_CONTEXT_CUSTOMVALUES_FUNCTIONS_ENABLED = "mantella_function_enabled" auto
+
+string property KEY_CONTEXT_CUSTOMVALUES_FUNCTIONS_NPCDISPLAYNAMES = "mantella_function_npc_display_names" auto
+string property KEY_CONTEXT_CUSTOMVALUES_FUNCTIONS_NPCDISTANCES = "mantella_function_npc_distances" auto
+string property KEY_CONTEXT_CUSTOMVALUES_FUNCTIONS_NPCIDS = "mantella_function_npc_ids" auto
+
+;;;;;;;;;;; INPUT ('Mantella Mod <- Mantella Software') ;;;;;;;;;;;;;
+
+string property FUNCTION_DATA_TARGET_IDS = "mantella_function_data_target_ids" auto
+string property FUNCTION_DATA_TARGET_NAMES = "mantella_function_data_target_names"auto
+string property FUNCTION_DATA_SOURCE_IDS = "mantella_function_data_source_ids"auto
+string property FUNCTION_DATA_MODES = "mantella_function_data_modes" auto

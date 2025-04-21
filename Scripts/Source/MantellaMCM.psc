@@ -15,6 +15,13 @@ int property oid_keymapCustomGameEventHotkey auto
 int property oid_keymapRadiantHotkey auto
 
 int property oid_showDialogueItems auto
+int property oid_enableFunctionCalling auto
+int property oid_maxFunctionCallingTargetCount auto
+int property oid_allowExternalCustomContextUpdateEventSignaling auto
+int property oid_externalCustomContextEventWaitTime auto
+int property oid_allowEventCompatibilityMode auto
+
+
 
 int property oid_radiantenabled auto
 int property oid_radiantdistance auto
@@ -240,7 +247,8 @@ Event OnOptionHighlight (Int optionID)
 
     elseIf optionID == oid_showDialogueItems	
 		SetInfoText("Show the dialogue tree entries to start a conversation or add and remove NPCs from it.")
-
+	elseIf optionID == oid_enableFunctionCalling	
+		SetInfoText("Enables function calling to allow for complex actions. Check the WebUI interface to pick specific LLM and options. May increase response time and token use.")
 	elseIf optionID == oid_radiantenabled
 		SetInfoText("Starts a Mantella conversation between the nearest two NPCs to the player at a given frequency. \nNPCs must both be stationary when a radiant dialogue attempt is made.")
 	elseIf optionID == oid_radiantdistance

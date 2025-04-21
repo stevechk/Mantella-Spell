@@ -1,0 +1,403 @@
+FormKey: 1F5B5B:Mantella.esp
+EditorID: MantellaUseDummySpellPackage
+Flags:
+- PreferredSpeed
+- AllowSwimming
+Type: Package
+PreferredSpeed: Run
+InteruptFlags:
+- ObserveCombatBehavior
+- GreetCorpseBehavior
+- ReactionToPlayerActions
+- AggroRadiusBehavior
+- WorldInteractions
+- 0x400
+- 0x800
+- 0x1000
+- 0x2000
+- 0x4000
+- 0x8000
+ScheduleMonth: -1
+ScheduleDayOfWeek: 255
+ScheduleHour: -1
+ScheduleMinute: -1
+Unknown3: 0x000000
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 1A4B47:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetFactionRankConditionData
+    Faction: 1A4B47:Mantella.esp
+  ComparisonValue: 6
+OwnerQuest: 0DF435:Mantella.esp
+DataInputVersion: 3
+Data:
+- Key: 0
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Name: Place to Travel
+    Flags:
+    - Public
+    Location:
+      Target:
+        MutagenObjectType: LocationFallback
+        Type: NearEditorLocation
+- Key: 2
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: Ride Horse if possible?
+    Flags:
+    - Public
+- Key: 4
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: Prefer Preferred Path?
+    Flags:
+    - Public
+- Key: 5
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: ActualSeconds
+    Flags:
+    - Public
+    Data: 5000
+- Key: 6
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: Player
+    Flags:
+    - Public
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 17
+- Key: 7
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: FuncTarget01
+    Flags:
+    - Public
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 19
+- Key: 8
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: FuncTarget02
+    Flags:
+    - Public
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 20
+- Key: 9
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: FuncTarget03
+    Flags:
+    - Public
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 21
+- Key: 10
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: FuncTarget04
+    Flags:
+    - Public
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 22
+- Key: 11
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: FuncTarget05
+    Flags:
+    - Public
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 23
+- Key: 13
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: False
+    Flags:
+    - Public
+- Key: 15
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: MinRadius
+    Flags:
+    - Public
+    Data: 200
+- Key: 17
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: MaxRadius
+    Flags:
+    - Public
+    Data: 500
+- Key: 19
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: TRUE
+    Flags:
+    - Public
+    Data: True
+- Key: 20
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: SpellToUse
+    Flags:
+    - Public
+    Target:
+      MutagenObjectType: PackageTargetObjectID
+      Reference: 1F5B58:Mantella.esp
+- Key: 21
+  Value:
+    MutagenObjectType: PackageDataInt
+    Name: NumToCastMin
+    Flags:
+    - Public
+    Data: 1
+- Key: 23
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: 0.5
+    Flags:
+    - Public
+- Key: 25
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: 1.0
+    Flags:
+    - Public
+- Key: 27
+  Value:
+    MutagenObjectType: PackageDataInt
+    Name: NumToCastMax
+    Flags:
+    - Public
+    Data: 1
+- Key: 29
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Name: LocationNearSelf
+    Flags:
+    - Public
+    Location:
+      Target:
+        MutagenObjectType: LocationFallback
+        Type: NearSelf
+XnamMarker: 0x1E
+ProcedureTree:
+- BranchType: Sequence
+  Root:
+    BranchCount: 6
+  Unknown: []
+- BranchType: Sequence
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 1A4B4A:Mantella.esp
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      RunOnType: PackageData
+      RunOnTypeIndex: 7
+      Faction: 1A4B49:Mantella.esp
+  Root:
+    BranchCount: 1
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: UseMagic
+  Flags: []
+  DataInputIndices:
+  - 29
+  - 20
+  - 7
+  - 19
+  - 23
+  - 25
+  - 23
+  - 25
+  - 21
+  - 27
+  - 13
+  Unknown: []
+- BranchType: Sequence
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 1A4B4A:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      RunOnType: PackageData
+      RunOnTypeIndex: 8
+      Faction: 1A4B49:Mantella.esp
+    ComparisonValue: 1
+  Root:
+    BranchCount: 1
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: UseMagic
+  Flags: []
+  DataInputIndices:
+  - 29
+  - 20
+  - 8
+  - 19
+  - 23
+  - 25
+  - 23
+  - 25
+  - 21
+  - 27
+  - 13
+  Unknown: []
+- BranchType: Sequence
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 1A4B4A:Mantella.esp
+    ComparisonValue: 2
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      RunOnType: PackageData
+      RunOnTypeIndex: 9
+      Faction: 1A4B49:Mantella.esp
+    ComparisonValue: 2
+  Root:
+    BranchCount: 1
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: UseMagic
+  Flags: []
+  DataInputIndices:
+  - 29
+  - 20
+  - 9
+  - 19
+  - 23
+  - 25
+  - 23
+  - 25
+  - 21
+  - 27
+  - 13
+  Unknown: []
+- BranchType: Sequence
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 1A4B4A:Mantella.esp
+    ComparisonValue: 3
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      RunOnType: PackageData
+      RunOnTypeIndex: 10
+      Faction: 1A4B49:Mantella.esp
+    ComparisonValue: 3
+  Root:
+    BranchCount: 1
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: UseMagic
+  Flags: []
+  DataInputIndices:
+  - 29
+  - 20
+  - 10
+  - 19
+  - 23
+  - 25
+  - 23
+  - 25
+  - 21
+  - 27
+  - 13
+  Unknown: []
+- BranchType: Sequence
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 1A4B4A:Mantella.esp
+    ComparisonValue: 4
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      RunOnType: PackageData
+      RunOnTypeIndex: 11
+      Faction: 1A4B49:Mantella.esp
+    ComparisonValue: 4
+  Root:
+    BranchCount: 1
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: UseMagic
+  Flags: []
+  DataInputIndices:
+  - 29
+  - 20
+  - 11
+  - 19
+  - 23
+  - 25
+  - 23
+  - 25
+  - 21
+  - 27
+  - 13
+  Unknown: []
+- BranchType: Sequence
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 1A4B4A:Mantella.esp
+    ComparisonValue: 5
+  Root:
+    BranchCount: 1
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: UseMagic
+  Flags: []
+  DataInputIndices:
+  - 29
+  - 20
+  - 6
+  - 19
+  - 23
+  - 25
+  - 23
+  - 25
+  - 21
+  - 27
+  - 13
+  Unknown: []
+OnBegin:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnEnd:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnChange:
+  Topics:
+  - MutagenObjectType: TopicReference

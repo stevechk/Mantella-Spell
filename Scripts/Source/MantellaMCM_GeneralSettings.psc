@@ -35,6 +35,12 @@ function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_NPCInventoryToggle = mcm.AddToggleOption("Allow Inventory", Repository.NPCInventory)
     mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
     mcm.oid_showDialogueItems = mcm.AddToggleOption("Show Dialogue Items", repository.showDialogueItems)   
+    mcm.oid_enableFunctionCalling = mcm.AddToggleOption("Enable Function Calling", repository.allowFunctionCalling)   
+    mcm.oid_maxFunctionCallingTargetCount = mcm.AddSliderOption("Set max number of targetable NPCs", repository.maxFunctionCallingTargetCount)   
+    mcm.oid_allowExternalCustomContextUpdateEventSignaling = mcm.AddToggleOption("Enable External Context Event Checks", repository.allowExternalCustomContextUpdateEventSignaling) 
+    mcm.oid_externalCustomContextEventWaitTime = mcm.AddSliderOption("Set Context Event Wait Time",repository.externalCustomContextEventWaitTime)  
+    mcm.oid_allowEventCompatibilityMode = mcm.AddToggleOption("Enable Event Compatibility mode", repository.allowEventCompatibilityMode)   
+    
 endfunction
 
 function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
@@ -54,6 +60,16 @@ function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repo
         mcm.SetSliderDialogDefaultValue(10)
         mcm.SetSliderDialogRange(5, 300)
         mcm.SetSliderDialogInterval(1)
+    ElseIf optionID==mcm.oid_externalCustomContextEventWaitTime
+        mcm.SetSliderDialogStartValue(repository.externalCustomContextEventWaitTime)
+        mcm.SetSliderDialogDefaultValue(0.15)
+        mcm.SetSliderDialogRange(0.05, 5)
+        mcm.SetSliderDialogInterval(0.05)
+    ElseIf optionID==mcm.oid_maxFunctionCallingTargetCount
+        mcm.SetSliderDialogStartValue(repository.maxFunctionCallingTargetCount)
+        mcm.SetSliderDialogDefaultValue(10)
+        mcm.SetSliderDialogRange(5, 20)
+        mcm.SetSliderDialogInterval(1)
     endif
 endfunction
 
@@ -70,6 +86,12 @@ function SliderOptionAccept(MantellaMCM mcm, int optionID, float value, Mantella
         mcm.SetSliderOptionValue(optionId, value)
         Repository.radiantFrequency=value
         debug.MessageBox("Please save and reload for this change to take effect")
+    elseif optionId == mcm.oid_externalCustomContextEventWaitTime
+        mcm.SetSliderOptionValue(optionId, value)
+        Repository.externalCustomContextEventWaitTime=value
+    elseif optionId == mcm.oid_maxFunctionCallingTargetCount
+        mcm.SetSliderOptionValue(optionId, value)
+        Repository.maxFunctionCallingTargetCount=value
     EndIf
 endfunction
 
@@ -124,6 +146,16 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     elseIf optionID == mcm.oid_showDialogueItems
         repository.showDialogueItems =! repository.showDialogueItems
         mcm.SetToggleOptionValue(mcm.oid_showDialogueItems, repository.showDialogueItems)
+    elseIf optionID == mcm.oid_enableFunctionCalling
+        repository.allowFunctionCalling =! repository.allowFunctionCalling
+        repository.allowEventCompatibilityMode =! repository.allowFunctionCalling
+        mcm.SetToggleOptionValue(mcm.oid_allowEventCompatibilityMode, repository.allowEventCompatibilityMode)  
+        mcm.SetToggleOptionValue(mcm.oid_enableFunctionCalling, repository.allowFunctionCalling)   
+    elseIf optionID == mcm.oid_allowEventCompatibilityMode
+        repository.allowEventCompatibilityMode =! repository.allowEventCompatibilityMode
+        repository.allowFunctionCalling =! repository.allowEventCompatibilityMode
+        mcm.SetToggleOptionValue(mcm.oid_allowEventCompatibilityMode, repository.allowEventCompatibilityMode)  
+        mcm.SetToggleOptionValue(mcm.oid_enableFunctionCalling, repository.allowFunctionCalling)    
     elseIf optionID == mcm.oid_radiantenabled
         repository.radiantEnabled =! repository.radiantEnabled
         mcm.SetToggleOptionValue(mcm.oid_radiantenabled, repository.radiantEnabled)

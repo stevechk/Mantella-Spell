@@ -1,0 +1,39 @@
+FormKey: 1F5B59:Mantella.esp
+EditorID: MantellaDummyFunctionEffect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaDummyFunctionSpellScript
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionDummySpell
+      Object: 1F5B58:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 1A4B47:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: FunctionCallingScript
+      Object: 19FA46:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionModeFaction
+      Object: 1A4B48:Mantella.esp
+Name:
+  TargetLanguage: English
+  Value: MantellaDummyFunctionEffect
+Flags:
+- NoHitEvent
+- Painless
+MagicSkill: Illusion
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
+CastType: FireAndForget
+TargetType: TargetActor
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: This is used as a placeholder for function call spells

@@ -16,6 +16,11 @@ Actor Property PlayerRef Auto
 VoiceType Property MantellaVoice00  Auto  
 MantellaInterface property EventInterface Auto
 ReferenceAlias Property Narrator Auto
+Faction Property MantellaFunctionTargetFaction Auto
+Faction Property MantellaFunctionSourceFaction Auto
+Faction Property MantellaFunctionModeFaction Auto
+Faction Property MantellaFunctionWhoIsSourceTargeting Auto
+Spell property MantellaFunctionDummySpell auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -38,6 +43,15 @@ bool _useNarrator = False
 int _lastTopicInfo = 0
 float httpReceivedTime = 0.0
 string lineToSpeakError = "Error: No line transmitted for actor to speak"
+; Function calling globals
+actor[] CurrentFunctionTargetArray
+int CurrentFunctionTargetPointer
+Actor[] _StoredActors
+Float[] _StoredActorPositionsX
+Float[] _StoredActorPositionsY
+Float[] _StoredActorPositionsZ
+int _CurrentStoredActorDataPointer
+
 
 event OnInit()
     RegisterForConversationEvents()
@@ -86,8 +100,15 @@ function StartConversation(Actor[] actorsToStartConversationWith)
         return
     endIf
     
+    InitiateActorFunctionData()
+    
+
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
     SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, PlayerRef.GetDisplayName() + repository.worldID)
+    if repository.allowFunctionCalling
+        repository.resetFunctionInferenceNPCArrays()
+        repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
+    endif
     BuildContext(true)
     AddCurrentActorsAndContext(handle, true)
 
@@ -101,6 +122,8 @@ function StartConversation(Actor[] actorsToStartConversationWith)
         SKSE_HTTP.setString(handle, mConsts.KEY_INPUTTYPE, mConsts.KEY_INPUTTYPE_TEXT)
     endIf
 
+    
+
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
     ; Debug.Notification("Sent StartConversation http request to " + address)
@@ -109,6 +132,8 @@ function StartConversation(Actor[] actorsToStartConversationWith)
         ModEvent.Send(eventHandle)
     endIf 
 endFunction
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;    Continue conversation    ;
@@ -180,6 +205,10 @@ function ContinueConversation(string nextAction, int handle)
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_PLAYERTALK)
         _does_accept_player_input = True
+        if repository.allowFunctionCalling
+            repository.resetFunctionInferenceNPCArrays()
+            repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
+        endif   
         If (repository.microphoneEnabled && !repository.useHotkeyToStartMic)
             sendRequestForVoiceTranscribe()
         Else
@@ -188,6 +217,10 @@ function ContinueConversation(string nextAction, int handle)
     elseIf (nextAction == mConsts.KEY_REQUESTTYPE_TTS)
         ClearRepeatingMessage()
         string transcribe = SKSE_HTTP.getString(handle, mConsts.KEY_TRANSCRIBE, "*Complete gibberish*")
+        if repository.allowFunctionCalling
+            repository.resetFunctionInferenceNPCArrays()
+            repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
+        endif   
         sendRequestForPlayerInput(transcribe, updateContext=True)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCACTION)
         int npcActionHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCACTION)
@@ -215,6 +248,11 @@ function RequestContinueConversation()
             SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
             _actorsUpdated = false
         endIf
+        if repository.allowFunctionCalling
+            repository.resetFunctionInferenceNPCArrays()
+            repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
+            BuildContext() ;Find a more elegant way to do this
+        endif
         SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     EndIf
 endFunction
@@ -274,7 +312,7 @@ function ProcessNpcSpeak(int handle)
         endIf
         ; Get actions only after the NPC starts speaking to improve response times
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
-        RaiseActionEvent(speaker, actions)
+        RaiseActionEvent(speaker, actions, handle)
     endIf
 endFunction
 
@@ -398,7 +436,11 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
         endIf
         SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
 
-        if updateContext ; if context has not been refreshed recently
+        if updateContext || repository.allowFunctionCalling ; if context has not been refreshed recently
+            if repository.allowFunctionCalling
+                repository.resetFunctionInferenceNPCArrays()
+                repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
+            endif
             BuildContext()
         endIf
         SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
@@ -426,14 +468,19 @@ function GetPlayerTextInput()
     ; Sneak in context refresh before textbox opens
     ; As of writing, BuildContext() takes ~0.3 seconds to run,
     ; but if this runtime increases in the future the delay may become noticeable
+    if repository.allowFunctionCalling
+        repository.resetFunctionInferenceNPCArrays()
+        repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
+    endif
     BuildContext()
+    
 
     UIExtensions.InitMenu("UITextEntryMenu")
     UIExtensions.OpenMenu("UITextEntryMenu")
 
     string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
     if (result && result != "")
-        sendRequestForPlayerInput(result, updateContext=False)
+        sendRequestForPlayerInput(result, updateContext=repository.allowFunctionCalling) ;update context if Function calling is turned on
         _does_accept_player_input = False
         ClearRepeatingMessage()
     endIf
@@ -502,7 +549,7 @@ endFunction
 ;       Action handler        ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Function RaiseActionEvent(Actor speaker, string[] actions)
+Function RaiseActionEvent(Actor speaker, string[] actions, int MantellaExeHandle)
     if(!actions || actions.Length == 0)
         return ;dont send out an action event if there are no actions to act upon
     endIf
@@ -523,7 +570,11 @@ Function RaiseActionEvent(Actor speaker, string[] actions)
             int handle = ModEvent.Create(EventInterface.EVENT_ACTIONS_PREFIX + extraAction)
             if (handle)
                 ModEvent.PushForm(handle, speaker)
+                if repository.allowFunctionCalling && !repository.allowEventCompatibilityMode
+                    ModEvent.PushInt(handle, MantellaExeHandle)
+                endif
                 ModEvent.Send(handle)
+                debug.notification("Sending out Event: "+EventInterface.EVENT_ACTIONS_PREFIX + extraAction)
             endIf 
         endIf
         i += 1
@@ -705,7 +756,8 @@ Function RemoveActors(Actor[] actorsToRemove)
             actorsRemoved = Utility.ResizeFormArray(actorsRemoved, actorsRemoved.Length + 1)
             actorsRemoved[actorsRemoved.Length - 1] = actorInQuestion
             Participants.RemoveAddedForm(actorInQuestion)
-            actorInQuestion.RemoveFromFaction(MantellaConversationParticipantsFaction)
+            RemoveActorFromAllMantellaFactions(actorInQuestion)
+            actorInQuestion.RemoveSpell(MantellaFunctionDummySpell)
             Debug.Notification(actorInQuestion.GetDisplayName()+" left the conversation.")
         EndIf
         i += 1
@@ -720,10 +772,21 @@ Function RemoveActors(Actor[] actorsToRemove)
     ;PrintActorsInConversation()
 EndFunction
 
+
+Function RemoveActorFromAllMantellaFactions(actor currentActor)
+    currentActor.RemoveFromFaction(MantellaConversationParticipantsFaction)
+    currentActor.RemoveFromFaction(MantellaFunctionTargetFaction)
+    currentActor.RemoveFromFaction(MantellaFunctionSourceFaction)
+    currentActor.RemoveFromFaction(MantellaFunctionModeFaction)
+    currentActor.RemoveFromFaction(MantellaFunctionWhoIsSourceTargeting)
+EndFunction
+
 Function ClearParticipants()
     int i = 0
     While i < Participants.GetSize()
-        (Participants.GetAt(i) as Actor).RemoveFromFaction(MantellaConversationParticipantsFaction)
+        actor currentActor = Participants.GetAt(i) as Actor
+        RemoveActorFromAllMantellaFactions(currentActor)
+        currentActor.RemoveSpell(MantellaFunctionDummySpell)
         i += 1
     EndWhile
     Participants.Revert()
@@ -855,8 +918,31 @@ int function BuildContext(bool isConversationStart = false)
 
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(_contextHandle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
+    int customValuesHandle = BuildCustomContextValues()
+    SKSE_HTTP.setNestedDictionary(_contextHandle, mConsts.KEY_CONTEXT_CUSTOMVALUES, customValuesHandle)
     ClearIngameEvent()
 endFunction
+
+int Function BuildCustomContextValues()
+    int handleCustomContextValues = SKSE_HTTP.createDictionary()
+    if repository.allowFunctionCalling
+        SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_FUNCTIONS_ENABLED, repository.allowFunctionCalling)
+        if repository.MantellaFunctionInferenceActorNamesList
+            SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_FUNCTIONS_NPCDISPLAYNAMES, repository.MantellaFunctionInferenceActorNamesList)
+            SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_FUNCTIONS_NPCDISTANCES, repository.MantellaFunctionInferenceActorDistanceList)
+            SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_FUNCTIONS_NPCIDS, repository.MantellaFunctionInferenceActorIDsList)
+        endif  
+    endif
+    if repository.allowExternalCustomContextUpdateEventSignaling
+        int handle = ModEvent.Create(mConsts.KEY_SIGNAL_EXTERNAL_CUSTOM_CONTEXT_EVENT)
+        if (handle)
+            ModEvent.PushInt(handle, handleCustomContextValues)
+            ModEvent.Send(handle)
+            Utility.Wait(repository.externalCustomContextEventWaitTime)
+        endIf
+    endif
+    return handleCustomContextValues
+EndFunction
 
 int function AddCurrentWeather(int contextHandle)
     If (!PlayerRef.IsInInterior())
@@ -898,3 +984,90 @@ EndFunction
 Function ClearRepeatingMessage()
     _repeatingMessage = ""
 EndFunction
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;         Function calling    ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+function UpdateCurrentFunctionTarget(form[] SourcesWhoAreTargeting, actor ActorToInsert)
+    
+    ;Clearing the currentFunctionTarget from all factions before putting in a new ref
+    CurrentFunctionTargetArray[CurrentFunctionTargetPointer] 
+    CurrentFunctionTargetArray[CurrentFunctionTargetPointer].SetFactionRank(MantellaFunctionTargetFaction,-2)
+    CurrentFunctionTargetArray[CurrentFunctionTargetPointer].RemoveFromFaction(MantellaFunctionTargetFaction)
+    ;Updating the new ref for the new function target
+    int i = 0
+    actor sourceActor
+    ;Set all sources to the same faction rank so that they're all targeting the same target
+    While i < SourcesWhoAreTargeting.Length
+        sourceActor = SourcesWhoAreTargeting[i] as actor
+        if ActorToInsert==playerRef ;if the source is the player we directly use AI package MantellaFunctionWhoIsSourceTargeting # 5 to prevent faction attribution issues
+            
+            sourceActor.SetFactionRank(MantellaFunctionWhoIsSourceTargeting,5)
+        else
+            sourceActor.SetFactionRank(MantellaFunctionWhoIsSourceTargeting,CurrentFunctionTargetPointer)
+        endif
+        i = i + 1
+    EndWhile
+    ;Set the new target
+    CurrentFunctionTargetArray[CurrentFunctionTargetPointer] = ActorToInsert
+    CurrentFunctionTargetArray[CurrentFunctionTargetPointer].AddToFaction(MantellaFunctionTargetFaction)
+    CurrentFunctionTargetArray[CurrentFunctionTargetPointer].SetFactionRank(MantellaFunctionTargetFaction, CurrentFunctionTargetPointer)
+    int previousPointerValue = CurrentFunctionTargetPointer
+    if CurrentFunctionTargetPointer<CurrentFunctionTargetArray.Length
+        CurrentFunctionTargetPointer= CurrentFunctionTargetPointer+1 ;incrmeent thepointer
+    else
+        CurrentFunctionTargetPointer= 0
+    endif
+endfunction
+
+
+Form[] Function GetParticipantsFormArray ()
+    return Participants.ToArray()
+EndFunction
+
+Function InitiateActorFunctionData()
+    _StoredActors = new Actor[5]
+    _StoredActorPositionsX = new Float[5]
+    _StoredActorPositionsY = new Float[5]
+    _StoredActorPositionsZ = new Float[5]
+    _CurrentStoredActorDataPointer = 0
+    CurrentFunctionTargetArray = new Actor[5]
+    CurrentFunctionTargetPointer = 0
+Endfunction
+
+Function StoreActorFunctionData(Actor currentActor)
+    _StoredActors[CurrentFunctionTargetPointer] = currentActor
+    _StoredActorPositionsX[CurrentFunctionTargetPointer] = Math.Floor(currentActor.getpositionX())
+    _StoredActorPositionsY[CurrentFunctionTargetPointer] = Math.Floor(currentActor.getpositionY())
+    _StoredActorPositionsZ[CurrentFunctionTargetPointer] = Math.Floor(currentActor.getpositionZ())
+    if _CurrentStoredActorDataPointer < _StoredActors.Length
+        _CurrentStoredActorDataPointer+1
+    else 
+        _CurrentStoredActorDataPointer=0
+    endif
+Endfunction
+
+bool Function CompareAndUpdateStoredActorPosition (Actor currentActor ) ;Checks if an actor moved recently
+    int i
+    while i < _StoredActors.Length 
+        if _StoredActors[i] == currentActor
+            float currentPositionX = Math.Floor(currentActor.getpositionX())
+            float currentPositionY = Math.Floor(currentActor.getpositionY())
+            float currentPositionZ = Math.Floor(currentActor.getpositionZ())
+            if currentPositionX==_StoredActorPositionsX[i] && currentPositionY==_StoredActorPositionsY[i] &&  currentPositionZ==_StoredActorPositionsZ[i]
+                Return true ;Forcing participant to start looting again of if they haven't moved in the last four seconds
+            Else
+                _StoredActorPositionsX[i]=currentPositionX
+                _StoredActorPositionsY[i]=currentPositionY
+                _StoredActorPositionsZ[i]=currentPositionZ
+                return False
+            endif
+        endif
+        i=i+1
+    endwhile
+EndFunction
+

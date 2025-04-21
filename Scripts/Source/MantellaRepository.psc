@@ -104,6 +104,19 @@ bool property NPCdebugSelectModeEnabled auto
 ; bool restartMantellaExe = False
 int property HttpPort auto
 
+;function calling
+;function calling parameters
+bool property allowFunctionCalling auto Conditional
+bool property allowEventCompatibilityMode auto
+float property maxFunctionCallingTargetCount auto
+Quest Property MantellaFunctionNPCCollectionQuest Auto 
+Form[] Property MantellaFunctionInferenceActorList  Auto
+String Property MantellaFunctionInferenceActorNamesList  Auto
+String Property MantellaFunctionInferenceActorDistanceList  Auto
+String Property MantellaFunctionInferenceActorIDsList  Auto
+bool property allowExternalCustomContextUpdateEventSignaling Auto
+float property externalCustomContextEventWaitTime Auto
+;bool property isAParticipantInteractingWithGroundItems auto conditional
 
 event OnInit()
     assignDefaultSettings(0, true)
@@ -215,6 +228,13 @@ function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
     
     NPCdebugSelectModeEnabled = false
 
+    ;initializing function calling functions:
+    allowFunctionCalling = false
+    allowEventCompatibilityMode = false
+    maxFunctionCallingTargetCount = 10
+    allowExternalCustomContextUpdateEventSignaling = true
+    externalCustomContextEventWaitTime = 0.15
+
         HttpPort = 4999
     EndIf
 endFunction
@@ -317,3 +337,125 @@ Event OnKeyDown(int KeyCode)
         endIf
     endIf
 endEvent
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;   LLM Function Calling Functions   ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Function resetFunctionInferenceNPCArrays()
+    MantellaFunctionInferenceActorNamesList=""
+    MantellaFunctionInferenceActorDistanceList=""
+    MantellaFunctionInferenceActorIDsList=""
+Endfunction
+
+Function UpdateFunctionInferenceNPCArrays(Form[] CurrentArray) 
+    Float[] currentDistanceArray = Utility.CreateFloatArray(0)
+    String[] currentFormIDArray =  Utility.CreateStringArray(0)
+    MantellaFunctionInferenceActorList = Utility.CreateFormArray(0) 
+    int icount = CurrentArray.Length
+    int iindex = 0
+    while (iindex < icount) && (iindex < maxFunctionCallingTargetCount)
+        Actor CurrentActor = CurrentArray[iindex] as Actor
+        float currentDistance = playerRef.GetDistance(CurrentActor)
+        string currentFormID = CurrentActor.GetFormID() as string
+        MantellaFunctionInferenceActorList =  Utility.ResizeFormArray(MantellaFunctionInferenceActorList, (MantellaFunctionInferenceActorList.Length+1))
+        MantellaFunctionInferenceActorList[MantellaFunctionInferenceActorList.Length - 1] = CurrentArray[iindex] as Form
+        currentDistanceArray =  Utility.ResizeFloatArray(currentDistanceArray, (currentDistanceArray.Length+1))
+        currentDistanceArray[currentDistanceArray.Length - 1] = currentDistance
+        currentFormIDArray =  Utility.ResizeStringArray(currentFormIDArray, (currentFormIDArray.Length+1))
+        currentFormIDArray[currentFormIDArray.Length - 1] = currentDistance
+        iindex = iindex + 1
+    endwhile
+    MantellaFunctionInferenceActorNamesList=FormArrayToString(CurrentArray)
+    MantellaFunctionInferenceActorDistanceList = currentDistanceArrayToString(currentDistanceArray)
+    MantellaFunctionInferenceActorIDsList = ActorsArrayToFormIDString(CurrentArray)
+Endfunction
+;;;;;;;;;;
+
+
+Form[] Function ScanAndReturnNearbyActorsAsForm(quest QuestForScan, bool addPlayerToo) 
+    Form[] ActorsInCell = Utility.CreateFormArray(0)
+    QuestForScan.start()
+    Utility.Wait(0.1)
+    int icount = QuestForScan.GetNumAliases() 
+    int iindex = 0
+    if addPlayerToo
+        ActorsInCell = Utility.ResizeFormArray(ActorsInCell, ActorsInCell.Length + 1)
+        ActorsInCell[ActorsInCell.Length - 1] = game.getplayer() as Actor
+    endif
+    while (iindex < icount)
+        ReferenceAlias CurrentAlias = QuestForScan.GetNthAlias(iindex) as ReferenceAlias
+        ObjectReference CurrentActorRef = CurrentAlias.GetReference() 
+        Actor currentActor = CurrentActorRef as actor
+        ActorsInCell = Utility.ResizeFormArray(ActorsInCell, ActorsInCell.Length + 1)
+        ActorsInCell[ActorsInCell.Length - 1] = CurrentActor
+        iindex = iindex + 1
+        ;debug.notification("Scanned Actor : "+CurrentActor.GetDisplayName())
+    endwhile
+    
+    QuestForScan.stop()
+    return ActorsInCell
+Endfunction
+
+Form[] Function GetFunctionInferenceActorList()  
+    return ScanAndReturnNearbyActorsAsForm(MantellaFunctionNPCCollectionQuest, addPlayerToo=true)
+Endfunction 
+
+String Function FormArrayToString (Form[] CurrentArray)
+    string StringOutput
+    int i = 0
+    string currentActorName =""
+    While i < CurrentArray.Length
+        Actor currentActor = CurrentArray[i] as actor
+        currentActorName = currentActor.GetDisplayName()
+        StringOutput += "["+currentActorName+"]"
+        if i != (CurrentArray.Length - 1)
+            StringOutput += ","
+        endif
+        i += 1
+    EndWhile
+    return StringOutput
+Endfunction
+
+String Function currentDistanceArrayToString (Float[] currentDistanceArray)
+    string StringOutput
+    int i = 0
+    While i < currentDistanceArray.Length
+        float currentDistance = currentDistanceArray[i]
+        StringOutput += "["+currentDistance+"]"
+        if i != (currentDistanceArray.Length - 1)
+            StringOutput += ","
+        endif
+        i += 1
+    EndWhile
+    return StringOutput
+Endfunction
+
+String Function ActorsArrayToFormIDString (Form[] CurrentArray)
+    string StringOutput
+    int i = 0
+    string currentActorFormID =""
+    While i < CurrentArray.Length
+        Actor currentActor = CurrentArray[i] as actor
+        currentActorFormID = currentActor.GetFormID()
+        StringOutput += "["+currentActorFormID+"]"
+        if i != (CurrentArray.Length - 1)
+            StringOutput += ","
+        endif
+        i += 1
+    EndWhile
+    return StringOutput
+Endfunction
+
+Actor Function getActorFromArray(string targetID, Form[] actorFormArray)
+    int i = 0
+    int convertedTargetID = targetID as int
+    While i < actorFormArray.Length
+        Actor currentActor = actorFormArray[i] as actor
+        if currentActor.GetFormID() == convertedTargetID
+            return currentActor
+        endIf
+        i += 1
+    EndWhile
+    return none
+Endfunction

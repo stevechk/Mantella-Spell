@@ -1,0 +1,215 @@
+FormKey: 1A4B48:Mantella.esp
+EditorID: MantellaFunctionModeFaction
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+Ranks:
+- Number: 0
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Loot Any
+    Female:
+      TargetLanguage: English
+      Value: Spell 1
+- Number: 1
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Loot Weapon
+    Female:
+      TargetLanguage: English
+      Value: Spell 2
+- Number: 2
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Loot Armor
+    Female:
+      TargetLanguage: English
+      Value: Spell 3
+- Number: 3
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Loot Junk
+    Female:
+      TargetLanguage: English
+      Value: Spell 4
+- Number: 4
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Loot Consumables
+    Female:
+      TargetLanguage: English
+      Value: Spell 5
+- Number: 5
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 6
+- Number: 6
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 7
+- Number: 7
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 8
+- Number: 8
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 9
+- Number: 9
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 10
+- Number: 10
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 11
+- Number: 11
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 12
+- Number: 12
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 13
+- Number: 13
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 14
+- Number: 14
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 15
+- Number: 15
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 16
+- Number: 16
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 17
+- Number: 17
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 18
+- Number: 18
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 19
+- Number: 19
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 20
+- Number: 20
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 21
+- Number: 21
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 22
+- Number: 22
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 23
+- Number: 23
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 24
+- Number: 24
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 25
+- Number: 25
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: ' '
+    Female:
+      TargetLanguage: English
+      Value: Spell 26
+VendorValues: {}

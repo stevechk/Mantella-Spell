@@ -1,0 +1,39 @@
+FormKey: 1A4B47:Mantella.esp
+EditorID: MantellaFunctionSourceFaction
+Flags:
+- HiddenFromPC
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+Ranks:
+- Number: 0
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Wait
+    Female: {}
+- Number: 1
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Follow
+    Female: {}
+- Number: 2
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Attack
+    Female: {}
+- Number: 3
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Loot
+    Female: {}
+- Number: 4
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Use Item
+    Female: {}
+VendorValues: {}
