@@ -22,6 +22,7 @@ Faction Property MantellaFunctionSourceFaction Auto
 Faction Property MantellaFunctionModeFaction Auto
 Faction Property MantellaFunctionWhoIsSourceTargeting Auto
 Spell property MantellaFunctionDummySpell auto
+MantellaAction_FunctionCallingScript Property MantellaActionFunctionCallingQuest Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -69,6 +70,7 @@ Function RegisterForConversationEvents()
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADD_EVENT,"OnAddEventReceived")
+    MantellaActionFunctionCallingQuest = Quest.GetQuest("MantellaAction_FunctionCalling") as MantellaAction_FunctionCallingScript
 EndFunction
 
 event OnUpdate()
@@ -937,12 +939,7 @@ int Function BuildCustomContextValues()
         endif  
     endif
     if repository.allowExternalCustomContextUpdateEventSignaling
-        int handle = ModEvent.Create(mConsts.KEY_SIGNAL_EXTERNAL_CUSTOM_CONTEXT_EVENT)
-        if (handle)
-            ModEvent.PushInt(handle, handleCustomContextValues)
-            ModEvent.Send(handle)
-            Utility.Wait(repository.externalCustomContextEventWaitTime)
-        endIf
+        MantellaActionFunctionCallingQuest.OnExternalCustomContextEventReceived(handleCustomContextValues)
     endif
     return handleCustomContextValues
 EndFunction
