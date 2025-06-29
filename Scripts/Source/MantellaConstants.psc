@@ -83,6 +83,7 @@ string property KEY_CONTEXT_INGAMEEVENTS = "mantella_ingame_events" auto
 string property KEY_CONTEXT_CUSTOMVALUES = "mantella_custom_context_values" auto
 string property KEY_SIGNAL_EXTERNAL_CUSTOM_CONTEXT_EVENT = "mantella_signal_external_custom_context_event" auto
 string property KEY_CONTEXT_NPC_SPELL_LIST = "mantella_npc_spell_list" auto
+string property KEY_CONTEXT_NPC_TRAINER_SKILLS_LIST = "mantella_npc_trainer_skills_list" auto
 
 ;player input
 string property KEY_REQUESTTYPE_TTS = "mantella_tts" auto
@@ -115,6 +116,8 @@ string property ACTION_MULTI_NPC_LOOT_ITEMS ="mantella_multi_npc_loot_items" aut
 string property ACTION_NPC_USE_SPELL ="mantella_npc_use_spell_on_target" auto
 string property ACTION_MULTI_TELEPORT_NPC ="mantella_multi_teleport_npc" auto
 string property ACTION_TELEPORT_NPC ="mantella_teleport_npc" auto
+string property ACTION_NPC_GIVE_DIRECTIONS = "mantella_give_directions" auto
+string property ACTION_NPC_TRAIN_SKILL = "mantella_train_skill" auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;       Functions Inference Value (MantellaMod -> Mantella Software)      ;
