@@ -631,7 +631,7 @@ Bool Function checkStringArrayForDuplicates (string currentString, String[] curr
         endif
         i += 1
     EndWhile
-    
+    return false
 Endfunction
 
 Spell Function GetSpellFromActor (string SpellNameToFind, actor currentActor)

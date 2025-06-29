@@ -116,11 +116,11 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
         endIf
         string itemPickedUpMessage = getPlayerName() + " picked up / took " + itemCount + itemName 
 
-        string sourceName = akSourceContainer.getbaseobject().getname()
-        if sourceName != ""
-            itemPickedUpMessage = getPlayerName() + " picked up / took " + itemCount + itemName + " from " + sourceName 
-        endIf
-        
+        string sourceName = ""
+        if akSourceContainer != None ; 
+            sourceName = " from" + akSourceContainer.getbaseobject().getname()
+        endif
+        itemPickedUpMessage = getPlayerName() + " picked up / took " + itemCount + itemName + sourceName                 
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
             ;Debug.MessageBox(itemPickedUpMessage)
             AddIngameEventToConversation(itemPickedUpMessage)
@@ -138,10 +138,12 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
         endIf
         string itemDroppedMessage = getPlayerName() + " dropped " + itemCount + itemName 
 
-        string destName = akDestContainer.getbaseobject().getname()
-        if destName != ""
-            itemDroppedMessage = getPlayerName() + " placed/gave " + itemCount + itemName + " in/on/to " + destName 
-        endIf
+        string destName = ""
+        if akDestContainer != None
+            destName = " in/on/to " + akDestContainer.getbaseobject().getname()
+        endif
+
+        itemDroppedMessage = getPlayerName() + " dropped " + itemCount + itemName + destName
         
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
             ;Debug.MessageBox(itemDroppedMessage)

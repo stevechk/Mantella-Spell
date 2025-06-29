@@ -29,7 +29,7 @@ event OnInit()
     _constants[4] = Amulet
 endEvent
 
-int Function AddEquipmentDescription(int handle, Actor actorToDescribeEquipmentOf, bool isPlayer, MantellaRepository repository)
+Function AddEquipmentDescription(int handle, Actor actorToDescribeEquipmentOf, bool isPlayer, MantellaRepository repository)
     int equipmentHandle = SKSE_HTTP.createDictionary()
     bool[] trackingOptions
     If (isPlayer)

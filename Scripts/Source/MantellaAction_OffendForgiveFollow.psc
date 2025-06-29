@@ -20,7 +20,7 @@ Function RegisterForOffendAndForgiveEvents()
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_INVENTORY,"OnNpcInventoryActionReceived")
 EndFunction
 
-event OnNpcOffendedActionReceived(Form speaker)
+event OnNpcOffendedActionReceived(Form speaker, int MantellaExeHandle = 0)
     Actor aSpeaker = speaker as Actor
     if (aSpeaker)
         if PlayerRef.isinfaction(repository.giafac_AllowAnger)
@@ -34,7 +34,7 @@ event OnNpcOffendedActionReceived(Form speaker)
     endif
 endEvent
 
-event OnNpcForgivenActionReceived(Form speaker)
+event OnNpcForgivenActionReceived(Form speaker, int MantellaExeHandle = 0)
     Actor aSpeaker = speaker as Actor
     if (aSpeaker)
         if PlayerRef.isinfaction(repository.giafac_AllowAnger)
@@ -44,7 +44,7 @@ event OnNpcForgivenActionReceived(Form speaker)
     endif
 endEvent
 
-event OnNpcFollowActionReceived(Form speaker)
+event OnNpcFollowActionReceived(Form speaker, int MantellaExeHandle = 0)
     Actor aSpeaker = speaker as Actor
     if (aSpeaker)
         if (aSpeaker.getrelationshiprank(PlayerRef) != "4")
@@ -67,7 +67,7 @@ event OnNpcFollowActionReceived(Form speaker)
     endif
 endEvent
 
-event OnNpcInventoryActionReceived(Form speaker)
+event OnNpcInventoryActionReceived(Form speaker, int MantellaExeHandle = 0)
     Actor aSpeaker = speaker as Actor
     if (aSpeaker)
         if PlayerRef.isinfaction(repository.fac_AllowInventory)
