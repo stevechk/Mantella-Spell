@@ -126,6 +126,15 @@ EndEvent
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
     if repository.targetTrackingOnCombatStateChanged
         String selfName = self.GetActorReference().getdisplayname()
+
+        if (aeCombatState == 0)
+            ;Debug.MessageBox(selfName+" is no longer in combat")
+            AddIngameEventToConversation(selfName+" is no longer in combat.")
+            ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
+            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "False", append=false)
+            return
+        endif
+
         String targetName
         if akTarget == PlayerRef
             targetName = getPlayerName(False)
@@ -133,12 +142,7 @@ Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
             targetName = akTarget.getdisplayname()
         endif
 
-        if (aeCombatState == 0)
-            ;Debug.MessageBox(selfName+" is no longer in combat")
-            AddIngameEventToConversation(selfName+" is no longer in combat.")
-            ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
-            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "False", append=false)
-        elseif (aeCombatState == 1)
+        if (aeCombatState == 1)
             ;Debug.MessageBox(selfName+" has entered combat with "+targetName)
             AddIngameEventToConversation(selfName+" has entered combat with "+targetName)
             ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
