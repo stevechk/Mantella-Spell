@@ -73,8 +73,8 @@ Event OnSpellCast(Form akSpell)
         String selfName = self.GetActorReference().getdisplayname()
         string spellCast = (akSpell as form).getname()
         if spellCast 
-            ;Debug.Notification(selfName+" casted the spell "+ spellCast)
-            AddIngameEventToConversation(selfName+" casted the spell " + spellCast )
+            ;Debug.Notification(selfName+" cast the spell "+ spellCast)
+            AddIngameEventToConversation(selfName+" cast the spell " + spellCast )
         endIf
     endif
 endEvent

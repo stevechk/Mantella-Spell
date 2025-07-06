@@ -278,7 +278,7 @@ Event OnOptionHighlight (Int optionID)
 	elseIf optionID == oid_playerTrackingOnItemRemoved	
 		SetInfoText("Tracks items dropped / removed while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnSpellCast	
-		SetInfoText("Tracks spells / shouts / effects casted while a Mantella conversation is active.")
+		SetInfoText("Tracks spells / shouts / effects cast while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnHit	
 		SetInfoText("Tracks damage taken (and the source of the damage) while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnObjectEquipped	
@@ -324,7 +324,7 @@ Event OnOptionHighlight (Int optionID)
 	elseIf optionID == oid_targetTrackingItemRemovedToggle	
 		SetInfoText("Tracks items dropped / removed while a Mantella conversation is active.")
 	elseIf optionID == oid_targetTrackingOnSpellCastToggle	
-		SetInfoText("Tracks spells / shouts / effects casted while a Mantella conversation is active.")
+		SetInfoText("Tracks spells / shouts / effects cast while a Mantella conversation is active.")
 	elseIf optionID == oid_targetTrackingOnHitToggle	
 		SetInfoText("Tracks damage taken (and the source of the damage) while a Mantella conversation is active.")
 	elseIf optionID == oid_targetTrackingOnCombatStateChangedToggle	

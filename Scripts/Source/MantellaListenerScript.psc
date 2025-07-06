@@ -86,7 +86,7 @@ event OnUpdate()
 
                     ;TODO: make distanceBetweenActors customisable
                     if (distanceBetweenActors <= 1000)
-                        ;have spell casted on Actor 1 by Actor 2
+                        ;have spell cast on Actor 1 by Actor 2
                         MantellaSpell.Cast(Actor2 as ObjectReference, Actor1 as ObjectReference)
                     elseif(repository.showRadiantDialogueMessages)
                         Debug.Notification("Radiant dialogue attempted. No NPCs available")
@@ -152,8 +152,8 @@ Event OnSpellCast(Form akSpell)
         string spellCast = (akSpell as form).getname()
         if spellCast 
             if (spellCast != "Mantella") && (spellCast != "Mantella Remove NPC") && (spellCast != "Mantella End Conversation")
-                ;Debug.Notification("The player casted the spell "+ spellCast)
-                AddIngameEventToConversation(getPlayerName() + " casted the spell / consumed " + spellCast )
+                ;Debug.Notification("The player cast the spell "+ spellCast)
+                AddIngameEventToConversation(getPlayerName() + " cast the spell / consumed " + spellCast )
             endIf
         endIf
     endif
