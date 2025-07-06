@@ -254,8 +254,9 @@ function RequestContinueConversation()
         if repository.allowFunctionCalling
             repository.resetFunctionInferenceNPCArrays()
             repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
-            BuildContext() ;Find a more elegant way to do this
         endif
+        BuildContext() ;Find a more elegant way to do this
+        SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
         SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     EndIf
 endFunction
@@ -445,8 +446,8 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
                 repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
             endif
             BuildContext()
+            SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
         endIf
-        SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
 
         SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     EndIf
@@ -475,8 +476,6 @@ function GetPlayerTextInput()
         repository.resetFunctionInferenceNPCArrays()
         repository.UpdateFunctionInferenceNPCArrays(repository.GetFunctionInferenceActorList())
     endif
-    BuildContext()
-    
 
     UIExtensions.InitMenu("UITextEntryMenu")
     UIExtensions.OpenMenu("UITextEntryMenu")
