@@ -4,14 +4,18 @@ Scriptname MantellaTargetListenerScript extends ReferenceAlias
 Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConversation Property conversation auto
+Form[] Property NPCTargets auto
 
 event OnInit()
     conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+    NPCTargets = Utility.CreateFormArray(0)
 endEvent
 
 Function AddIngameEventToConversation(string eventText)
     If (conversation.IsRunning())
         conversation.AddIngameEvent(eventText)
+    else
+        Debug.Trace("Conversation is not running, skipping event: " + eventText)
     EndIf
 EndFunction
 
@@ -119,32 +123,63 @@ EndEvent
 
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
     if repository.targetTrackingOnCombatStateChanged
-        String selfName = self.GetActorReference().getdisplayname()
 
-        if (aeCombatState == 0)
-            ;Debug.MessageBox(selfName+" is no longer in combat")
-            AddIngameEventToConversation(selfName+" is no longer in combat.")
-            ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
-            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "False", append=false)
+        Actor actorRef = self.GetActorReference()
+
+        if actorRef == None
+            Debug.Trace("OnCombatStateChanged error: actorRef is None, akTarget is " + akTarget + " and aeCombatState is " + aeCombatState)
             return
         endif
 
-        String targetName
-        if akTarget == PlayerRef
-            targetName = getPlayerName(False)
-        else
-            targetName = akTarget.getdisplayname()
+        String selfName = actorRef.getdisplayname()
+
+        String targetName = ""
+        if akTarget != None
+            if akTarget == PlayerRef
+                targetName = getPlayerName(False)
+            else
+                targetName = akTarget.getdisplayname()
+            endif
         endif
 
-        if (aeCombatState == 1)
-            ;Debug.MessageBox(selfName+" has entered combat with "+targetName)
-            AddIngameEventToConversation(selfName+" has entered combat with "+targetName)
+        if (aeCombatState == 0)
+            ; the NPC has exited combat - check if any of its targets were killed by the group
+            int i = 0
+            while i < NPCTargets.Length
+                Actor target = NPCTargets[i] as Actor
+                bool targetKilled = target.IsDead()
+                Actor targetKiller = target.GetKiller()
+
+                if targetKilled && targetKiller != None && (targetKiller == PlayerRef || targetKiller == actorRef)
+                    AddIngameEventToConversation(target.getdisplayname() + " was killed by the group")
+                endif
+                i += 1
+            endWhile
+
+            ; remove all remaining NPC targets
+            NPCTargets = Utility.CreateFormArray(0)
+            AddIngameEventToConversation(selfName+" is no longer in combat.")
             ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
-            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "True", append=false)
-        elseif (aeCombatState == 2)
-            ;Debug.MessageBox(selfName+" is searching for "+targetName)
-            AddIngameEventToConversation( selfName+" is searching for "+targetName)
-        endIf
+            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "False", append=false)
+        else
+            ; the NPC has entered combat
+
+            ; track the target, so that we can check if it was killed by the group when the NPC exits combat
+            if NPCTargets.Find(akTarget) < 0
+                NPCTargets = Utility.ResizeFormArray(NPCTargets, NPCTargets.Length + 1)
+                NPCTargets[NPCTargets.Length - 1] = akTarget
+            endif
+
+            if (aeCombatState == 1)
+                ;Debug.MessageBox(selfName+" has entered combat with "+targetName)
+                AddIngameEventToConversation(selfName+" has entered combat with "+targetName)
+                ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
+                ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "True", append=false)
+            elseif (aeCombatState == 2)
+                ;Debug.MessageBox(selfName+" is searching for "+targetName)
+                AddIngameEventToConversation(selfName+" is searching for "+targetName)
+            endIf
+        endif
     endif
 endEvent
 
@@ -196,7 +231,18 @@ EndEvent
 
 
 Event OnDying(Actor akKiller)
+    Debug.Notification(self.GetActorReference().getdisplayname() + " has died")
+    String selfName = self.GetActorReference().getdisplayname()
+    String killerName = ""
+    if akKiller == None
+        AddIngameEventToConversation(selfName + " died")
+    else
+        killerName = akKiller.getdisplayname()
+        AddIngameEventToConversation(selfName + " was killed by " + killerName)
+    EndIf
     If (conversation.IsRunning())
-        conversation.EndConversation()
+        Actor[] actors = new Actor[1]
+        actors[0] = self.GetActorReference()
+        conversation.RemoveActorsFromConversation(actors)
     EndIf
 EndEvent
