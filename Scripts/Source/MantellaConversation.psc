@@ -349,8 +349,12 @@ function NpcSpeak(Actor actorSpeaking, string lineToSay, Topic topicToUse, bool 
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to start speaking", 2)
     If (!isSpokenByNarrator)
         Actor NpcToLookAt = GetNpcToLookAt(actorSpeaking, _lastNpcToSpeak)
-        actorSpeaking.SetLookAt(NpcToLookAt)
-        NpcToLookAt.SetLookAt(actorSpeaking)
+        if NpcToLookAt == None
+            Debug.Trace("NpcSpeak: error NpcToLookAt is None, actorSpeaking is " + actorSpeaking.GetDisplayName())
+        else
+            actorSpeaking.SetLookAt(NpcToLookAt)
+            NpcToLookAt.SetLookAt(actorSpeaking)
+        endIf
     Else
         ; Narrations do not have an actor to apply the IsTalking spell to, so a wait time needs to be forced here
         Utility.Wait(lineDuration)
