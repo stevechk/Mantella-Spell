@@ -921,6 +921,13 @@ function BuildContext(bool isConversationStart = false)
     endIf
     SKSE_HTTP.setInt(_contextHandle, mConsts.KEY_CONTEXT_TIME, _initialTime)
 
+    int configSettingsHandle = SKSE_HTTP.createDictionary()
+    SKSE_HTTP.setBool(configSettingsHandle, mConsts.KEY_CONTEXT_CONFIG_SETTINGS_NPC_ANGER, repository.NPCAnger)
+    SKSE_HTTP.setBool(configSettingsHandle, mConsts.KEY_CONTEXT_CONFIG_SETTINGS_NPC_INVENTORY, repository.NPCInventory)
+    SKSE_HTTP.setBool(configSettingsHandle, mConsts.KEY_CONTEXT_CONFIG_SETTINGS_NPC_PACKAGE, repository.NPCPackage)
+    SKSE_HTTP.setBool(configSettingsHandle, mConsts.KEY_CONTEXT_CONFIG_SETTINGS_NPC_FOLLOW, repository.AllowForNPCtoFollow)
+    SKSE_HTTP.setNestedDictionary(_contextHandle, mConsts.KEY_CONTEXT_CONFIG_SETTINGS, configSettingsHandle)
+
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(_contextHandle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
     int customValuesHandle = BuildCustomContextValues()
