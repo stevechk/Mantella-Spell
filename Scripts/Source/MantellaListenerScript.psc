@@ -112,15 +112,13 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
         string itemName = akBaseItem.GetName()
         string itemCount = ""
         if itemName == "gold" ; only count the number of items if it is gold
-            itemCount = aiItemCount+" "
+            itemCount = aiItemCount + " "
         endIf
-        string itemPickedUpMessage = getPlayerName() + " picked up / took " + itemCount + itemName 
-
         string sourceName = ""
-        if akSourceContainer != None ; 
-            sourceName = " from" + akSourceContainer.getbaseobject().getname()
+        if akSourceContainer != None ; if the source container is a container, not an actor
+            sourceName = " from " + akSourceContainer.getdisplayname()
         endif
-        itemPickedUpMessage = getPlayerName() + " picked up / took " + itemCount + itemName + sourceName                 
+        string itemPickedUpMessage = getPlayerName() + " picked up/took " + itemCount + itemName + sourceName                 
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
             ;Debug.MessageBox(itemPickedUpMessage)
             AddIngameEventToConversation(itemPickedUpMessage)
@@ -134,17 +132,13 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
         string itemName = akBaseItem.GetName()
         string itemCount = ""
         if itemName == "gold" ; only count the number of items if it is gold
-            itemCount = aiItemCount+" "
+            itemCount = aiItemCount + " "
         endIf
-        string itemDroppedMessage = getPlayerName() + " dropped " + itemCount + itemName 
-
         string destName = ""
         if akDestContainer != None
-            destName = " in/on/to " + akDestContainer.getbaseobject().getname()
+            destName = " in/on/to " + akDestContainer.getdisplayname()
         endif
-
-        itemDroppedMessage = getPlayerName() + " dropped " + itemCount + itemName + destName
-        
+        string itemDroppedMessage = getPlayerName() + " dropped/gave " + itemCount + itemName + destName      
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
             ;Debug.MessageBox(itemDroppedMessage)
             AddIngameEventToConversation(itemDroppedMessage)

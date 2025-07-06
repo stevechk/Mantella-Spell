@@ -34,17 +34,14 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
         if itemName == "gold" ; only count the number of items if it is gold
             itemCount = aiItemCount+" "
         endIf
-
-        string itemPickedUpMessage = selfName+" picked up " + itemCount + itemName 
-
-        string sourceName = akSourceContainer.getbaseobject().getname()
-        if sourceName != ""
-            itemPickedUpMessage = selfName+" picked up " + itemCount + itemName + " from " + sourceName 
-        endIf
-        
+        string sourceName = ""
+        if akSourceContainer != None
+            sourceName = " from " + akSourceContainer.GetDisplayName()
+        endif
+        string itemPickedUpMessage = selfName + " picked up/took " + itemCount + itemName + sourceName         
         if (itemName != "Iron Arrow") && (itemName != "") && sourceName != PlayerRef.GetDisplayName() ;Papyrus hallucinates iron arrows
             ;Debug.Notification(itemPickedUpMessage)
-            AddIngameEventToConversation( itemPickedUpMessage)
+            AddIngameEventToConversation(itemPickedUpMessage)
         endIf
     endif
 EndEvent
@@ -58,14 +55,11 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
         if itemName == "gold" ; only count the number of items if it is gold
             itemCount = aiItemCount+" "
         endIf
-
-        string itemDroppedMessage = selfName+" dropped " + itemCount + itemName
-
-        string destName = akDestContainer.getbaseobject().getname()
-        if (destName != "")
-            itemDroppedMessage = selfName+" placed " + itemCount + itemName + " in/on " + destName 
-        endIf
-        
+        string destName = ""
+        if akDestContainer != None
+            destName = " in/on/to " + akDestContainer.GetDisplayName()
+        endif
+        string itemDroppedMessage = selfName + " dropped/gave " + itemCount + itemName + destName 
         if  (itemName != "Iron Arrow") && (itemName != "") && destName != PlayerRef.GetDisplayName() ; Papyrus hallucinates iron arrows
             ;Debug.Notification(itemDroppedMessage)
             AddIngameEventToConversation(itemDroppedMessage)
